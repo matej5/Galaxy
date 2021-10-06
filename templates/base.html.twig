@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title>{% block title %}Galaxy of everything{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block stylesheets %}<link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="left-container">
+        {% if is_granted('ROLE_USER') %}
+            <a class="navName" href="{{ path('app_profile') }}"><img class="navImg" src="{{ asset('images/'~ app.user.email ~'/'~ app.user.image ) }}"><b>{{ app.user.firstName }} {{ app.user.lastName }}</b></a>
+        {% endif %}
+        <a class="button" href="{{ path('home_index') }}">Home</a>
+    </div>
+    <div class="right-container">
+        {% if is_granted('ROLE_USER') %}
+            <a class="btn btn-secondary" role="button" href="{{ path('app_logout') }}">Logout</a>
+        {% else %}
+                <button onclick="openForm()" role="button" class="button">Login</button>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="space">
+    <a href="#">
+        <img class="node" src="{{ asset('images/star_v2.png') }}" height="35" width="35" style="top: 50%; left: 40%;">
+    </a>
+    <a href="#">
+        <img class="node" src="{{ asset('images/star_v2.png') }}" height="35" width="35" style="top: 10%; left: 20%;">
+    </a>
+    <a href="#">
+        <img class="node" src="{{ asset('images/star_v2.png') }}" height="35" width="35" style="top: 70%; left: 60%;">
+    </a>
+    <a href="#">
+        <img class="node" src="{{ asset('images/star_v2.png') }}" height="35" width="35" style="top: 30%; left: 80%;">
+    </a>
+    <a href="#">
+        <img class="node" src="{{ asset('images/star_v2.png') }}" height="35" width="35" style="top: 60%; left: 20%;">
+    </a>
+    <a href="#">
+        <img class="node" src="{{ asset('images/star_v2.png') }}" height="35" width="35" style="top: 80%; left: 30%;">
+    </a>
+</div>
+
+<div class="container">
+    {% for message in app.flashes('success') %}
+        <div class="row mt-3">
+            <div class="col">
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% block body %}{% endblock %}
+</div>
+
+<div class="form-popup" id="myForm">
+    <div class="form-middle">
+        aaaaa</br>
+        aaaaa</br>
+        aaaaa</br>
+        aaaaa</br>
+        aaaaa</br>
+        aaaaa</br>
+        aaaaa</br>
+        <button type="submit" class="button" formnovalidate>Save</button>
+        <button type="button" class="button" onclick="closeForm()">Close</button>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Contact us: </br>
+        <a href="mailto:info@galaxyofeverything.com">info@galaxyofeverything.com</a>
+    </p>
+</div>
+
+{% block javascripts %}
+    <script src="{{ asset('js/form.js') }}"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
+{% endblock %}
+</body>
+</html>
