@@ -5,6 +5,8 @@ namespace App\Entity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
+ * Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface"
+ * @Doctrine\ORM\Mapping\Table(name="user")
  * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User implements UserInterface

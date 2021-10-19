@@ -62,14 +62,13 @@
 
 <div class="form-popup" id="myForm">
     <div class="form-middle">
-        aaaaa</br>
-        aaaaa</br>
-        aaaaa</br>
-        aaaaa</br>
-        aaaaa</br>
-        aaaaa</br>
-        aaaaa</br>
+        {{ form_start(form) }}
+        {{ form_row(form.user) }}
+        <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        {{ form_end(form) }}
         <button type="submit" class="button" formnovalidate>Save</button>
+        <a class="button" href="{{ path('app_register') }}">Don't have account?</a>
         <button type="button" class="button" onclick="closeForm()">Close</button>
     </div>
 </div>

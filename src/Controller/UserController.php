@@ -61,7 +61,7 @@ class UserController extends AbstractController
         EntityManagerInterface $entityManager
     ) {
         if ($this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('post_index');
+            return $this->redirectToRoute('home_index');
         } else {
             $user = new User();
             $form = $this->createForm(RegistrationFormType::class, $user);
