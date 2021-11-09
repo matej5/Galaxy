@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Form\UserFormType;
 use App\Repository\UserRepository;
-use App\Security\LoginFormAuthenticator;
+use App\Security\LoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +33,7 @@ class UserController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('post_index');
+            return $this->redirectToRoute('home_index');
         } else {
             // get the login error if there is one
             $error = $authenticationUtils->getLastAuthenticationError();
@@ -41,61 +41,6 @@ class UserController extends AbstractController
             $lastUsername = $authenticationUtils->getLastUsername();
 
             return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
-        }
-    }
-
-    /**
-     * @Symfony\Component\Routing\Annotation\Route("/register", name="app_register")
-     * @param              Request $request
-     * @param              UserPasswordEncoderInterface $passwordEncoder
-     * @param              GuardAuthenticatorHandler $guardHandler
-     * @param              LoginFormAuthenticator $authenticator
-     * @param              EntityManagerInterface $entityManager
-     * @return             null|Response
-     */
-    public function register(
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
-        GuardAuthenticatorHandler $guardHandler,
-        LoginFormAuthenticator $authenticator,
-        EntityManagerInterface $entityManager
-    ) {
-        if ($this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('home_index');
-        } else {
-            $user = new User();
-            $form = $this->createForm(RegistrationFormType::class, $user);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $user->createAvatar();
-                $user->setImage('avatar.jpeg');
-
-                // encode the plain password
-                $user->setPassword(
-                    $passwordEncoder->encodePassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                    )
-                );
-                $entityManager->persist($user);
-                $entityManager->flush();
-                // do anything else you need here, like send an email
-
-                return $guardHandler->authenticateUserAndHandleSuccess(
-                    $user,
-                    $request,
-                    $authenticator,
-                    'main' // firewall name in security.yaml
-                );
-            }
-
-            return $this->render(
-                'security/register.html.twig',
-                [
-                    'registrationForm' => $form->createView(),
-                ]
-            );
         }
     }
 
@@ -117,7 +62,7 @@ class UserController extends AbstractController
     ) {
 
         if (!$this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('post_index');
+            return $this->redirectToRoute('home_index');
         } else {
             $user = $this->getUser();
 
@@ -152,7 +97,7 @@ class UserController extends AbstractController
     ) {
 
         if (!$this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('post_index');
+            return $this->redirectToRoute('home_index');
         } else {
             $user = $userRepository->findOneBy(['id' => $user->getId()]);
 
@@ -174,7 +119,7 @@ class UserController extends AbstractController
     {
 
         if (!$this->isGranted('ROLE_USER')) {
-            return $this->redirectToRoute('post_index');
+            return $this->redirectToRoute('home_index');
         } else {
             $user = $this->getUser();
             $user->createAvatar();

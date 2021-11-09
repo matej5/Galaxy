@@ -2,56 +2,62 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface"
- * @Doctrine\ORM\Mapping\Table(name="user")
- * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="`user`")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
-     * @Doctrine\ORM\Mapping\Id()
-     * @Doctrine\ORM\Mapping\GeneratedValue()
-     * @Doctrine\ORM\Mapping\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @Doctrine\ORM\Mapping\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
 
     /**
-     * @Doctrine\ORM\Mapping\Column(type="json")
+     * @ORM\Column(type="json")
      */
     private $roles = [];
 
     /**
-     * @var                       string The hashed password
-     * @Doctrine\ORM\Mapping\Column(type="string")
+     * @var string The hashed password
+     * @ORM\Column(type="string")
      */
     private $password;
 
     /**
-     * @Doctrine\ORM\Mapping\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=100)
      */
     private $firstname;
 
     /**
-     * @Doctrine\ORM\Mapping\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=100)
      */
     private $lastname;
 
     /**
-     * @Doctrine\ORM\Mapping\Column(type="string", length=255)
+     * @ORM\Column(type="boolean")
+     */
+    private $isVerified = false;
+
+
+    /**
+     * @Doctrine\ORM\Mapping\Column(type="string", length=300)
      */
     private $image;
-
-    public function __construct()
-    {
-    }
 
     public function getId(): ?int
     {
@@ -75,9 +81,17 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return (string) $this->email;
     }
 
     /**
@@ -100,11 +114,11 @@ class User implements UserInterface
     }
 
     /**
-     * @see UserInterface
+     * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return (string)$this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -115,11 +129,14 @@ class User implements UserInterface
     }
 
     /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     /**
@@ -151,6 +168,18 @@ class User implements UserInterface
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
@@ -249,13 +278,5 @@ class User implements UserInterface
         }
 
         return $im;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function __toString()
-    {
-        return $this->email;
     }
 }

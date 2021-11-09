@@ -21,7 +21,7 @@
         {% if is_granted('ROLE_USER') %}
             <a class="btn btn-secondary" role="button" href="{{ path('app_logout') }}">Logout</a>
         {% else %}
-                <button onclick="openForm()" role="button" class="button">Login</button>
+            <button onclick="openForm()" role="button" class="button">Login</button>
         {% endif %}
     </div>
 </nav>
@@ -62,14 +62,46 @@
 
 <div class="form-popup" id="myForm">
     <div class="form-middle">
-        {{ form_start(form) }}
-        {{ form_row(form.user) }}
-        <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-        {{ form_end(form) }}
-        <button type="submit" class="button" formnovalidate>Save</button>
-        <a class="button" href="{{ path('app_register') }}">Don't have account?</a>
-        <button type="button" class="button" onclick="closeForm()">Close</button>
+        <form method="post">
+            {% if error is defined %}
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <label for="inputEmail">Email</label>
+            <input type="email" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+            <label for="inputPassword">Password</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+
+            {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" name="_remember_me"> Remember me
+                </label>
+            </div>
+            #}
+
+            <button class="btn btn-lg btn-primary" type="submit">
+                Sign in
+            </button>
+
+            <a class="button" href="{{ path('app_register') }}">Don't have account?</a>
+        </form>
     </div>
 </div>
 

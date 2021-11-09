@@ -2,12 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\LikeDislike;
-use App\Entity\Post;
-use App\Form\CommentFormType;
-use App\Form\PostFormType;
-use App\Repository\LikeDislikeRepository;
-use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
